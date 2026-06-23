@@ -5,8 +5,8 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
@@ -38,18 +38,15 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// 3. FETCH EVENT: Audio files storage external github (raw files) nunchi stream avuthay 
-// and core UI layout fast ga cache nunchi render avuthundi.
+// 3. FETCH EVENT: Audio files streaming and asset serving
 self.addEventListener('fetch', (event) => {
-  // Audio streaming smooth ga undadaniki network request lane prefer chestham
   if (event.request.url.includes('.mp3')) {
     return; 
   }
-
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        return cachedResponse; // UI icons, styles cache nunchi fast ga load avuthay
+        return cachedResponse;
       }
       return fetch(event.request);
     })
