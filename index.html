@@ -622,16 +622,36 @@
         }
 
         function expandConsole() {
-            audioConsolePanel.classList.add("is-open");
-            document.body.classList.add("player-expanded"); 
-        }
+    audioConsolePanel.classList.add("is-open");
+    document.body.classList.add("player-expanded"); 
+    
+    // బ్యాక్ బటన్ ప్రెస్‌ను క్యాచ్ చేయడానికి హిస్టరీలో ఒక స్టేట్ పుష్ చేస్తున్నాం
+    if (!window.location.hash.includes("#player")) {
+        history.pushState({ playerOpen: true }, "Player", "#player");
+    }
+}
 
-        function collapseConsole() {
-            audioConsolePanel.classList.remove("is-open");
-            document.body.classList.remove("player-expanded"); 
-            speedFlyoutMenu.classList.remove("show");
-            volumeWrapper.classList.remove("expanded");
-        }
+function collapseConsole() {
+    audioConsolePanel.classList.remove("is-open");
+    document.body.classList.remove("player-expanded"); 
+    speedFlyoutMenu.classList.remove("show");
+    volumeWrapper.classList.remove("expanded");
+
+    // ఒకవేళ ప్లేయర్ మాన్యువల్‌గా డౌన్ ఆరో బటన్ నొక్కి క్లోజ్ చేస్తే, హిస్టరీని క్లీన్ చేస్తాం
+    if (window.location.hash === "#player") {
+        history.back();
+    }
+}
+// మొబైల్ హార్డ్‌వేర్ బ్యాక్ బటన్ లేదా బ్రౌజర్ బ్యాక్ బటన్ నొక్కినప్పుడు...
+window.addEventListener("popstate", (event) => {
+    if (audioConsolePanel.classList.contains("is-open")) {
+        // యాప్ క్లోజ్ అవ్వకుండా కేవలం ప్లేయర్ UI మాత్రమే క్లోజ్ అవుతుంది
+        audioConsolePanel.classList.remove("is-open");
+        document.body.classList.remove("player-expanded"); 
+        speedFlyoutMenu.classList.remove("show");
+        volumeWrapper.classList.remove("expanded");
+    }
+});
 
         miniPlayCtrl.addEventListener("click", (e) => { e.stopPropagation(); internalPlaybackState ? initPauseCommand() : initPlayCommand(); });
         expandedPlayCtrl.addEventListener("click", () => { internalPlaybackState ? initPauseCommand() : initPlayCommand(); });
