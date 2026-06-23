@@ -557,15 +557,13 @@
                     <button class="list-download-btn" title="Download Track"><i class="fas fa-download"></i></button>
                 `;
                 
-                // Track click event handler
                 li.addEventListener("click", (e) => {
-                    if (e.target.closest('.list-download-btn')) return; // Ignore if download button clicked
+                    if (e.target.closest('.list-download-btn')) return; 
                     selectedTrackIdx = idx;
                     loadPipelineTrack(selectedAlbumIdx, selectedTrackIdx);
                     initPlayCommand();
                 });
 
-                // Download button click handler
                 li.querySelector('.list-download-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
                     triggerTrackDownload(track.source, track.title);
@@ -622,36 +620,24 @@
         }
 
         function expandConsole() {
-    audioConsolePanel.classList.add("is-open");
-    document.body.classList.add("player-expanded"); 
-    
-    // బ్యాక్ బటన్ ప్రెస్‌ను క్యాచ్ చేయడానికి హిస్టరీలో ఒక స్టేట్ పుష్ చేస్తున్నాం
-    if (!window.location.hash.includes("#player")) {
-        history.pushState({ playerOpen: true }, "Player", "#player");
-    }
-}
+            audioConsolePanel.classList.add("is-open");
+            document.body.classList.add("player-expanded"); 
+            
+            if (!window.location.hash.includes("#player")) {
+                history.pushState({ playerOpen: true }, "Player", "#player");
+            }
+        }
 
-function collapseConsole() {
-    audioConsolePanel.classList.remove("is-open");
-    document.body.classList.remove("player-expanded"); 
-    speedFlyoutMenu.classList.remove("show");
-    volumeWrapper.classList.remove("expanded");
+        function collapseConsole() {
+            audioConsolePanel.classList.remove("is-open");
+            document.body.classList.remove("player-expanded"); 
+            speedFlyoutMenu.classList.remove("show");
+            volumeWrapper.classList.remove("expanded");
 
-    // ఒకవేళ ప్లేయర్ మాన్యువల్‌గా డౌన్ ఆరో బటన్ నొక్కి క్లోజ్ చేస్తే, హిస్టరీని క్లీన్ చేస్తాం
-    if (window.location.hash === "#player") {
-        history.back();
-    }
-}
-// మొబైల్ హార్డ్‌వేర్ బ్యాక్ బటన్ లేదా బ్రౌజర్ బ్యాక్ బటన్ నొక్కినప్పుడు...
-window.addEventListener("popstate", (event) => {
-    if (audioConsolePanel.classList.contains("is-open")) {
-        // యాప్ క్లోజ్ అవ్వకుండా కేవలం ప్లేయర్ UI మాత్రమే క్లోజ్ అవుతుంది
-        audioConsolePanel.classList.remove("is-open");
-        document.body.classList.remove("player-expanded"); 
-        speedFlyoutMenu.classList.remove("show");
-        volumeWrapper.classList.remove("expanded");
-    }
-});
+            if (window.location.hash === "#player") {
+                history.back();
+            }
+        }
 
         miniPlayCtrl.addEventListener("click", (e) => { e.stopPropagation(); internalPlaybackState ? initPauseCommand() : initPlayCommand(); });
         expandedPlayCtrl.addEventListener("click", () => { internalPlaybackState ? initPauseCommand() : initPlayCommand(); });
@@ -745,6 +731,16 @@ window.addEventListener("popstate", (event) => {
             else { document.getElementById("nextItemBtn").click(); }
         });
 
+        // మొబైల్ బ్యాక్ బటన్ ప్రెస్ చేసినప్పుడు కేవలం ప్లేయర్ మాత్రమే క్లోజ్ అవుతుంది
+        window.addEventListener("popstate", (event) => {
+            if (audioConsolePanel.classList.contains("is-open")) {
+                audioConsolePanel.classList.remove("is-open");
+                document.body.classList.remove("player-expanded"); 
+                speedFlyoutMenu.classList.remove("show");
+                volumeWrapper.classList.remove("expanded");
+            }
+        });
+		
         window.addEventListener("DOMContentLoaded", () => { bootupAlbumSystem(); loadPipelineTrack(selectedAlbumIdx, selectedTrackIdx); });
     </script>
 </body>
